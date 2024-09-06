@@ -1,0 +1,41 @@
+[gd_scene load_steps=5 format=3 uid="uid://dekoc63qwn6vy"]
+
+[ext_resource type="Texture2D" uid="uid://w5nyex0j431l" path="res://Assets/Tiny Swords (Update 010)/Factions/Knights/Troops/Archer/Arrow/Arrow.png" id="1_7lu3x"]
+[ext_resource type="Script" path="res://scene and scripts/Extras/arrow.gd" id="1_siftx"]
+
+[sub_resource type="SegmentShape2D" id="SegmentShape2D_fclf0"]
+a = Vector2(-28, 0)
+b = Vector2(18, 0)
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_v6uub"]
+radius = 3.0
+height = 58.0
+
+[node name="Arrow" type="CharacterBody2D"]
+collision_layer = 0
+collision_mask = 0
+script = ExtResource("1_siftx")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("1_7lu3x")
+vframes = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 3)
+shape = SubResource("SegmentShape2D_fclf0")
+
+[node name="Hurtbox" type="Area2D" parent="."]
+collision_layer = 2048
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+position = Vector2(0, 3)
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_v6uub")
+
+[node name="Appered" type="Timer" parent="."]
+wait_time = 10.0
+
+[connection signal="area_entered" from="Hurtbox" to="." method="_on_hurtbox_area_entered"]
+[connection signal="timeout" from="Appered" to="." method="_on_appered_timeout"]

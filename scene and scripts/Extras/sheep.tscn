@@ -1,0 +1,156 @@
+[gd_scene load_steps=20 format=3 uid="uid://bm1enoofawqp8"]
+
+[ext_resource type="Script" path="res://scene and scripts/Extras/sheep.gd" id="1_b8gk3"]
+[ext_resource type="Texture2D" uid="uid://c0gyspgpvowfe" path="res://Assets/Tiny Swords (Update 010)/Resources/Sheep/HappySheep_All.png" id="1_dypiw"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_img07"]
+atlas = ExtResource("1_dypiw")
+region = Rect2(0, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6uudi"]
+atlas = ExtResource("1_dypiw")
+region = Rect2(128, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_207n4"]
+atlas = ExtResource("1_dypiw")
+region = Rect2(256, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ddsq8"]
+atlas = ExtResource("1_dypiw")
+region = Rect2(384, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3n4c1"]
+atlas = ExtResource("1_dypiw")
+region = Rect2(512, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1ofmu"]
+atlas = ExtResource("1_dypiw")
+region = Rect2(640, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_738ie"]
+atlas = ExtResource("1_dypiw")
+region = Rect2(768, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_p0kup"]
+atlas = ExtResource("1_dypiw")
+region = Rect2(896, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ggh43"]
+atlas = ExtResource("1_dypiw")
+region = Rect2(0, 128, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mqq78"]
+atlas = ExtResource("1_dypiw")
+region = Rect2(128, 128, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lsop0"]
+atlas = ExtResource("1_dypiw")
+region = Rect2(256, 128, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_n38yb"]
+atlas = ExtResource("1_dypiw")
+region = Rect2(384, 128, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_82k78"]
+atlas = ExtResource("1_dypiw")
+region = Rect2(512, 128, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5xfil"]
+atlas = ExtResource("1_dypiw")
+region = Rect2(640, 128, 128, 128)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_my26k"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_img07")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6uudi")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_207n4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ddsq8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3n4c1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1ofmu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_738ie")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_p0kup")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ggh43")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mqq78")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lsop0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_n38yb")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_82k78")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5xfil")
+}],
+"loop": false,
+"name": &"walk",
+"speed": 10.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_qnj2a"]
+radius = 31.0
+height = 80.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_87po7"]
+radius = 29.0
+height = 80.0
+
+[node name="Sheep" type="CharacterBody2D"]
+collision_layer = 128
+collision_mask = 1200
+script = ExtResource("1_b8gk3")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
+scale = Vector2(2, 2)
+sprite_frames = SubResource("SpriteFrames_my26k")
+animation = &"idle"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+rotation = -1.5708
+shape = SubResource("CapsuleShape2D_qnj2a")
+
+[node name="DetectionArea" type="Area2D" parent="."]
+collision_layer = 256
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionArea"]
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_87po7")
+
+[node name="Timer" type="Timer" parent="."]
+
+[node name="DamageCoolDown" type="Timer" parent="."]
+
+[connection signal="animation_finished" from="AnimatedSprite2D" to="." method="_on_animated_sprite_2d_animation_finished"]
+[connection signal="area_entered" from="DetectionArea" to="." method="_on_detection_area_area_entered"]
+[connection signal="area_exited" from="DetectionArea" to="." method="_on_detection_area_area_exited"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
+[connection signal="timeout" from="DamageCoolDown" to="." method="_on_damage_cool_down_timeout"]

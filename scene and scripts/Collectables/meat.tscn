@@ -1,0 +1,81 @@
+[gd_scene load_steps=11 format=3 uid="uid://dt4aiqsedfhcs"]
+
+[ext_resource type="Script" path="res://scene and scripts/Collectables/meat.gd" id="1_8radl"]
+[ext_resource type="Texture2D" uid="uid://bifebphi4bb0y" path="res://Assets/Tiny Swords (Update 010)/Resources/Resources/M_Spawn.png" id="1_cbynt"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xbera"]
+atlas = ExtResource("1_cbynt")
+region = Rect2(0, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ctq5f"]
+atlas = ExtResource("1_cbynt")
+region = Rect2(128, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8gji0"]
+atlas = ExtResource("1_cbynt")
+region = Rect2(256, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uuoop"]
+atlas = ExtResource("1_cbynt")
+region = Rect2(384, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4a8ns"]
+atlas = ExtResource("1_cbynt")
+region = Rect2(512, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cbyj1"]
+atlas = ExtResource("1_cbynt")
+region = Rect2(640, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_biin0"]
+atlas = ExtResource("1_cbynt")
+region = Rect2(768, 0, 128, 128)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_5w1de"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xbera")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ctq5f")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8gji0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_uuoop")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4a8ns")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cbyj1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_biin0")
+}],
+"loop": false,
+"name": &"spawn",
+"speed": 10.0
+}]
+
+[node name="Meat" type="Node2D"]
+script = ExtResource("1_8radl")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+texture_filter = 1
+sprite_frames = SubResource("SpriteFrames_5w1de")
+animation = &"spawn"
+frame = 6
+frame_progress = 1.0
+
+[node name="SignalArea" type="Area2D" parent="."]
+collision_layer = 64
+collision_mask = 16
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="SignalArea"]
+texture_filter = 1
+polygon = PackedVector2Array(1, -5, 1, -4, -2, -4, -2, -3, -4, -3, -4, -2, -5, -2, -5, -1, -6, -1, -6, 0, -7, 0, -7, 2, -8, 2, -8, 5, -9, 5, -9, 7, -11, 7, -11, 8, -12, 8, -12, 9, -14, 9, -14, 10, -16, 10, -16, 11, -18, 11, -18, 12, -19, 12, -19, 13, -20, 13, -20, 15, -21, 15, -21, 27, -20, 27, -20, 28, -19, 28, -19, 29, -18, 29, -18, 30, -17, 30, -17, 31, -14, 31, -14, 32, -7, 32, -7, 31, -4, 31, -4, 30, -3, 30, -3, 29, -1, 29, -1, 28, 5, 28, 5, 29, 15, 29, 15, 28, 19, 28, 19, 27, 22, 27, 22, 26, 23, 26, 23, 25, 24, 25, 24, 24, 25, 24, 25, 23, 26, 23, 26, 22, 27, 22, 27, 19, 28, 19, 28, 10, 27, 10, 27, 4, 26, 4, 26, 3, 25, 3, 25, 1, 24, 1, 24, 0, 22, 0, 22, -1, 21, -1, 21, -2, 19, -2, 19, -3, 18, -3, 18, -4, 14, -4, 14, -5)
+
+[connection signal="body_entered" from="SignalArea" to="." method="_on_signal_area_body_entered"]
