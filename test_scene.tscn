@@ -1,11 +1,11 @@
-[gd_scene load_steps=3 format=3 uid="uid://dd61c6rhv28ik"]
+[gd_scene load_steps=3 format=3 uid="uid://dmfluhrjl5gmh"]
 
-[ext_resource type="PackedScene" uid="uid://cpl4hmgh1u0hc" path="res://scene and scripts/Characters/tnt.tscn" id="1_doxf8"]
+[ext_resource type="PackedScene" uid="uid://d1ctllt5e52pi" path="res://scene and scripts/Characters/torch.tscn" id="2_qyogg"]
 [ext_resource type="PackedScene" uid="uid://c5immxqpjy6fm" path="res://scene and scripts/Characters/warrior.tscn" id="2_scwen"]
 
 [node name="TestScene" type="Node2D"]
 
-[node name="TNT" parent="." instance=ExtResource("1_doxf8")]
-
 [node name="warrior" parent="." instance=ExtResource("2_scwen")]
 position = Vector2(748, 21)
+
+[node name="Torch" parent="." instance=ExtResource("2_qyogg")]

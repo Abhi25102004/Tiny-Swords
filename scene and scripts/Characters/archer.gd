@@ -1,83 +1,61 @@
-extends CharacterBody2D
+extends Player
 
-var CanPlay : bool = true
-var CanAttack : bool = false
-var GiveDamageToPlayer : bool = true
-var arrow_position : Marker2D
-var arrow_direction : bool = false
-var direction : Vector2 = Vector2(0,0)
-var speed : int = 300
-var health: int = 100
-var BodyEntered: CharacterBody2D = null
-var arrow : PackedScene = preload("res://scene and scripts/Extras/arrow.tscn")
-
-@onready var animations: AnimatedSprite2D = $AnimatedSprite2D
-@onready var damageCoolDown: Timer = $DamageCoolDown
-@onready var HealthBar: TextureProgressBar = $Health
-@onready var left: Marker2D = $Left
-@onready var right: Marker2D = $Right
+var Arrow : PackedScene = preload("res://scene and scripts/Extras/arrow.tscn")
+var ArrowPosition : Marker2D
+var ArrowInstance : CharacterBody2D
+@onready var Animations: AnimatedSprite2D = $AnimatedSprite2D
+@onready var HealthLable: TextureProgressBar = $Health
+@onready var LeftMarker: Marker2D = $Left
+@onready var RightMarker: Marker2D = $Right
 
 func _ready() -> void:
-	HealthBar.value = 100
-	arrow_position = right 
+	health = 100
+	speed = 300
+	direction = Vector2(0,0)
+	power = Global.PlayerLevel * 10
+	Global.PlayerPower = power
+	HealthLable.max_value = Global.PlayerLevel * health
+	HealthLable.value = Global.PlayerLevel * health
+	ArrowPosition = LeftMarker
 
-func _physics_process(_delta: float) -> void:
-	if CanPlay:
-		''' Part which takes care of motion '''
-		direction = Input.get_vector("left","right","up","down")
-		velocity = direction * speed
-		move_and_slide()
+func _physics_process(delta: float) -> void:
+	if MainState == GameState.Play:
+		StateManager()
 		
-		''' Part which takes care of fliping animations based of direction '''
-		if direction.x > 0:
-			animations.flip_h = false
-			arrow_position = right
-			arrow_direction = false
-		elif direction.x < 0:
-			animations.flip_h = true
-			arrow_position = left
-			arrow_direction = true
+		DamageTaken()
+		
+		match player:
 			
-		''' Part which takes care of walking and idle animation '''
-		if direction != Vector2(0,0):
-			animations.play("walk")
-		else:
-			animations.play("idle")
+			PlayerState.Idle:
+				Animations.play("idle")
 			
-		''' Part which takes care attack '''
-		if Input.is_action_pressed("attack"):
-			CanPlay = false
-			Global.hasPlayerAttacked = true
-			animations.play("attack")
+			PlayerState.Movement:
+				movement()
+				Animations.play("walk")
+				
+				match PlayerDirection:
+			
+					DirectionState.Right:
+						Animations.flip_h = false
+						ArrowPosition = RightMarker
+			
+					DirectionState.Left:
+						Animations.flip_h = true
+						ArrowPosition = LeftMarker
+			
+			PlayerState.Attacking:
+				MainState = GameState.Blocked
+				Animations.play("attack")
+				ArrowInstance = Arrow.instantiate()
+				ArrowInstance.direction.x = -1 if ArrowPosition == LeftMarker else 1 
+				ArrowInstance.movement = Animations.flip_h
+				ArrowInstance.global_position = ArrowPosition.global_position
+			
+			PlayerState.Dead:
+				get_tree().quit()
 
-func _on_animated_sprite_2d_animation_finished() -> void:
-	CanPlay = true
-	if Global.hasPlayerAttacked:
-		CreateArrow()
-		Global.hasPlayerAttacked = false
-
-func _on_damage_cool_down_timeout() -> void:
-	''' Part which check damage taken '''
-	if GiveDamageToPlayer:
-		randomize()
-		HealthChecker()
-	damageCoolDown.start()
-
-func _on_hitbox_area_entered(_area: Area2D) -> void:
-	GiveDamageToPlayer = true
-	damageCoolDown.start()
-
-func _on_hitbox_area_exited(_area: Area2D) -> void:
-	GiveDamageToPlayer = false
-	damageCoolDown.stop()
-
-func CreateArrow():
-	var arrow_instance : CharacterBody2D = arrow.instantiate()
-	arrow_instance.direction.x = -1 if arrow_position == left else 1 
-	arrow_instance.movement = arrow_direction
-	arrow_instance.global_position = arrow_position.global_position
-	get_parent().add_child(arrow_instance)
-
-func HealthChecker():
-	health -= randi_range(1,5)
-	HealthBar.value = health
+func AnimationHasFinished() -> void:
+	if MainState == GameState.Blocked:
+		get_parent().add_child(ArrowInstance)
+	
+	MainState = GameState.Play

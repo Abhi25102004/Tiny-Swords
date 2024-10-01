@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cnl1s44o6n810"]
+
+[ext_resource type="Script" path="res://Code Testing scene.gd" id="1_omuar"]
+
+[node name="Code Testing scene" type="Node2D"]
+script = ExtResource("1_omuar")

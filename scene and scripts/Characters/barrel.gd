@@ -5,16 +5,13 @@ var CanAttack : bool = false
 var CanWalk : bool = false
 var TakeDamage : bool = false
 var CoolDown : bool = true
-var arrow_position : Marker2D
-var BodyEntered : CharacterBody2D = null
+
+var BodyEntered : CharacterBody2D
 var direction : Vector2 = Vector2(0,0)
 var speed : int = 250
 var health: int = 100
-var dirctionOfArrow : Vector2 = Vector2(0,0)
-var arrow_direction : bool = false
-var power: int 
-var arrowInstance : CharacterBody2D
 
+@export var power: int 
 @onready var animations: AnimatedSprite2D = $AnimatedSprite2D
 @onready var HealthBar: TextureProgressBar = $Health
 @onready var hurt_box: Area2D = $HurtBox
@@ -23,12 +20,10 @@ var arrowInstance : CharacterBody2D
 @onready var damageCoolDown: Timer = $DamageCoolDown
 
 var BagOfGold : PackedScene = preload("res://scene and scripts/Collectables/coin_bag.tscn")
-var arrow : PackedScene = preload("res://scene and scripts/Extras/dyanamite.tscn")
 
 func _ready() -> void:
 	power = randi_range(1,3)
 	HealthBar.value = 100
-	arrow_position = right 
 
 func _physics_process(_delta: float) -> void:
 	if CanPlay:
@@ -40,11 +35,11 @@ func _physics_process(_delta: float) -> void:
 			
 			''' Part which takes care of fliping animations based of direction '''
 			if direction.x > 0:
-				arrow_position = right
-				arrow_direction = false
+				animations.flip_h = false
+				hurt_box.position = right.position
 			elif direction.x < 0:
-				arrow_position = left
-				arrow_direction = true
+				animations.flip_h = true
+				hurt_box.position = left.position
 				
 		''' Part which takes care of walking and idle animation '''
 		if direction != Vector2(0,0):
@@ -53,21 +48,19 @@ func _physics_process(_delta: float) -> void:
 			animations.play("idle")
 			
 		''' Part which takes care attack '''
-		if CanAttack and CoolDown:
+		if CanAttack:
 			CanPlay = false
-			CoolDown = false
-			damageCoolDown.start()
 			animations.play("attack")
 	
 	''' Part which takes care of damage taken'''
-	if Global.hasPlayerAttacked and TakeDamage:
+	if Global.hasPlayerAttacked and TakeDamage and CoolDown:
 		HealthChecker()
 		Global.hasPlayerAttacked = false
-		
+		CoolDown = false
+		damageCoolDown.start()
 	
 	''' Checking if health is decreased to zero then playing death animation if needed '''
 	if health <= 0:
-		CanAttack = false
 		CanPlay = false
 		health = -1
 		HealthBar.visible = false
@@ -78,15 +71,11 @@ func _physics_process(_delta: float) -> void:
 		await get_tree().create_timer(0.6).timeout
 		get_parent().add_child(bag)
 		queue_free()
-	
-	''' To change direction based on the player position '''
-	if BodyEntered != null:
-		animations.flip_h = true if BodyEntered.global_position.x < global_position.x else false 
-	
+
 func _on_animated_sprite_2d_animation_finished() -> void:
-	CanPlay = true
 	if CanAttack:
-		CreateArrow()
+		queue_free()
+	CanPlay = true
 
 func _on_detection_area_body_entered(body: CharacterBody2D) -> void:
 	CanWalk = true
@@ -95,7 +84,14 @@ func _on_detection_area_body_entered(body: CharacterBody2D) -> void:
 func _on_detection_area_body_exited(_body: CharacterBody2D) -> void:
 	CanWalk = false
 	direction = Vector2(0,0)
-	BodyEntered = null
+
+func _on_hurt_box_area_entered(_area: Area2D) -> void:
+	CanWalk = false
+	CanAttack = true
+
+func _on_hurt_box_area_exited(_area: Area2D) -> void:
+	CanWalk = true
+	CanAttack = false
 
 func _on_hitbox_area_entered(area: Area2D) -> void:
 	if area.collision_layer == 2048:
@@ -112,20 +108,3 @@ func _on_damage_cool_down_timeout() -> void:
 func HealthChecker():
 	health -= 10
 	HealthBar.value = health
-
-func _on_hurt_box_body_entered(body: CharacterBody2D) -> void:
-	CanWalk = false
-	CanAttack = true
-	direction = Vector2(0,0)
-
-func _on_hurt_box_body_exited(_body: Node2D) -> void:
-	CanWalk = true
-	CanAttack = false
-
-func CreateArrow():
-	var arrow_instance : CharacterBody2D = arrow.instantiate()
-	arrow_instance.bodyPosition = BodyEntered.global_position
-	arrow_instance.instancePosition = arrow_position.global_position
-	arrow_instance.movement = arrow_direction
-	arrow_instance.global_position = arrow_position.global_position
-	get_parent().add_child(arrow_instance)
