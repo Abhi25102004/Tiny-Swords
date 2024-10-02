@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://dj2xmtk5ooits"]
+[gd_scene load_steps=21 format=3 uid="uid://dj2xmtk5ooits"]
 
 [ext_resource type="Script" path="res://scene and scripts/Characters/archer.gd" id="1_thy61"]
 [ext_resource type="Texture2D" uid="uid://bcfb5ul3eoiul" path="res://Assets/Tiny Swords (Update 010)/Factions/Knights/Troops/Archer/Archer + Bow/Archer_Blue_(NoArms).png" id="2_ub4ft"]
@@ -30,13 +30,32 @@ region = Rect2(768, 0, 192, 192)
 atlas = ExtResource("2_ub4ft")
 region = Rect2(960, 0, 192, 192)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_vlipd"]
+atlas = ExtResource("2_ub4ft")
+region = Rect2(0, 192, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rop56"]
+atlas = ExtResource("2_ub4ft")
+region = Rect2(192, 192, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_68niv"]
+atlas = ExtResource("2_ub4ft")
+region = Rect2(384, 192, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_e0ary"]
+atlas = ExtResource("2_ub4ft")
+region = Rect2(576, 192, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nltq7"]
+atlas = ExtResource("2_ub4ft")
+region = Rect2(768, 192, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_a7wg8"]
+atlas = ExtResource("2_ub4ft")
+region = Rect2(960, 192, 192, 192)
+
 [sub_resource type="SpriteFrames" id="SpriteFrames_exxy8"]
 animations = [{
-"frames": [],
-"loop": false,
-"name": &"attack",
-"speed": 10.0
-}, {
 "frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_bmxy7")
@@ -60,7 +79,25 @@ animations = [{
 "name": &"idle",
 "speed": 10.0
 }, {
-"frames": [],
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vlipd")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rop56")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_68niv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_e0ary")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nltq7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_a7wg8")
+}],
 "loop": true,
 "name": &"walk",
 "speed": 10.0
@@ -84,7 +121,7 @@ texture_filter = 1
 sprite_frames = SubResource("SpriteFrames_exxy8")
 animation = &"idle"
 frame = 2
-frame_progress = 0.338108
+frame_progress = 0.265253
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, 10)
@@ -123,5 +160,4 @@ position = Vector2(-36, 10)
 [node name="Right" type="Marker2D" parent="."]
 position = Vector2(37, 10)
 
-[connection signal="animation_finished" from="AnimatedSprite2D" to="." method="AnimationHasFinished"]
 [connection signal="timeout" from="DamageCoolDown" to="." method="_on_damage_cool_down_timeout"]

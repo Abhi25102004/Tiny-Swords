@@ -1,5 +1,6 @@
-[gd_scene load_steps=13 format=3 uid="uid://dex7fuyl5vpuh"]
+[gd_scene load_steps=14 format=3 uid="uid://dex7fuyl5vpuh"]
 
+[ext_resource type="Script" path="res://scene and scripts/Extras/bow.gd" id="1_8knev"]
 [ext_resource type="Texture2D" uid="uid://d0x4xst1fnj3n" path="res://Assets/Tiny Swords (Update 010)/Factions/Knights/Troops/Archer/Archer + Bow/Archer_Bow_Blue.png" id="1_f88ix"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_trrmt"]
@@ -65,9 +66,9 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_f7uy5")
 }],
-"loop": true,
+"loop": false,
 "name": &"attack",
-"speed": 5.0
+"speed": 10.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -75,7 +76,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"idle",
-"speed": 5.0
+"speed": 10.0
 }]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_w8kba"]
@@ -85,6 +86,7 @@ radius = 5.0
 texture_filter = 1
 collision_layer = 0
 collision_mask = 0
+script = ExtResource("1_8knev")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_bnyuc")
@@ -92,3 +94,8 @@ animation = &"idle"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_w8kba")
+
+[node name="Shooter" type="Marker2D" parent="."]
+position = Vector2(37, 10)
+
+[connection signal="animation_finished" from="AnimatedSprite2D" to="." method="AnimationCompleted"]
